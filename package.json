@@ -1,0 +1,32 @@
+{
+  "name": "cafeserver",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "main.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run build && node build/main",
+    "dev": "npx nodemon"
+  },
+  "keywords": [],
+  "author": "Babenko Alexey",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/body-parser": "^1.19.5",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/express-fileupload": "^1.5.1",
+    "@types/node": "^22.10.10",
+    "cors": "^2.8.5",
+    "nodemon": "^3.1.9",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "express-fileupload": "^1.5.1",
+    "firebase": "^11.2.0",
+    "uuid": "^11.0.5"
+  }
+}
