@@ -5,3 +5,6 @@ export interface Data {
     price: number;
     category: string;
 }
+
+
+export type Condition = ">" | ">=" | "<" | "<=" | "==" | "!=";

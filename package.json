@@ -24,9 +24,11 @@
     "typescript": "^5.7.3"
   },
   "dependencies": {
+    "col": "^0.1.0",
     "express": "^4.21.2",
     "express-fileupload": "^1.5.1",
     "firebase": "^11.2.0",
+    "row": "^0.0.1",
     "uuid": "^11.0.5"
   }
 }

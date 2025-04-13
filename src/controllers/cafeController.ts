@@ -6,8 +6,10 @@ import {
   deleteDataById,
   getTheDataById,
   getDataByPriceGreaterThan,
+  getFilteredMenuData,
+  getSortedMenuData,
 } from "../db.js";
-import { Data } from "../types.js";
+import { Condition, Data } from "../types.js";
 
 export async function create(req: Request, res: Response) {
     try {
@@ -81,6 +83,56 @@ export async function deleteById(req: Request, res: Response) {
         res.status(500).json({error:"Ошибка при удалении блюда"});
     }
 }
+
+export async function getFilteredMenu(req: Request, res: Response) {
+    try {
+        const { operator, filterField, limit, value } = req.query;
+
+        if (
+            value === undefined ||
+            filterField === undefined ||
+            operator === undefined
+        ) {
+            res.status(400).json({ error: "Не все обячзательные параметры заданы" });
+            return;
+        }
+
+        const data = await getFilteredMenuData({
+            operator: operator as Condition,
+            value: filterField === "price" ? Number(value) : (value as string),
+            filterField: filterField as string,
+            limit: limit ? Number(limit) : undefined,
+        });
+        res.status(200).json(data);
+    } catch (error) {
+        console.error("Ошибка при получении данных по цене:", error);
+        res.status(500).json({ error: "Ошибка при получении данных по цене." });
+    }
+}
+
+export const getSortedMenu = async (req: Request, res: Response) => {
+    try {
+        const { sort_by = "price", sort_direction = "asc", limit } = req.query;
+
+        const limitNumber = limit ? Number(limit as string) : undefined;
+    
+        console.log("===", sort_by, sort_direction, limit);
+    
+        const data = await getSortedMenuData({
+            sortField: sort_by as string,
+            sortDirection: sort_direction as "asc" | "desc",
+            limit: limitNumber,
+        });
+    
+        res.status(200).json(data);
+    } catch (error){
+        console.error("Ошибка при сортировке меню:", error);
+        res.status(500).json({
+            success: false,
+            message: "произошла ошибка при сортировке меню",
+        });
+    }
+};
 
 export async function getByPrice(req: Request, res: Response) {
     try {

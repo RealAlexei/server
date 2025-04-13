@@ -12,9 +12,12 @@ import {
   getDoc,
   where,
   documentId,
-  DocumentReference
+  DocumentReference,
+  Query,
+  limit as limitItems,
+  orderBy
 } from "firebase/firestore";
-import { Data } from "./types.js";
+import { Condition, Data } from "./types.js";
 import { error } from "console";
 
 // Your web app's Firebase configuration
@@ -115,5 +118,61 @@ export const updateDataById = async (documentId: string, updatedData: Data) => {
         console.error("Ошибка при обновлении документа: ", error);
     }
 }
+
+export const getFilteredMenuData = async ({
+    operator,
+    value,
+    filterField,
+    limit,
+}: {
+    operator: Condition;
+    value: number | string;
+    filterField: string;
+    limit?: number;
+}) => {
+    try {
+        const collectionReference = collection(fireStoreDB, "newMenu");
+        let q: Query;
+
+        q = query(collectionReference, where(filterField, operator, value));
+
+        if (limit) {
+            q = query(q, limitItems(limit));
+        }
+
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.docs.map((doc) => doc.data() as Data);
+    } catch (error) {
+        console.error("Ошибка при получении данных:", error);
+        return [];
+    }
+};
+
+export const getSortedMenuData = async ({
+    sortField = "price",
+    sortDirection = "asc",
+    limit,
+}: {
+    sortField?: string;
+    sortDirection?: "asc" | "desc";
+    limit?: number; 
+}) => {
+    try {
+        const collectionReference = collection(fireStoreDB,"newMenu");
+        let q: Query;
+
+        q = query(collectionReference, orderBy(sortField, sortDirection));
+
+        if (limit) {
+            q = query(q, limitItems(limit));
+        }
+
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.docs.map((doc) => doc.data() as Data);
+    } catch (error) {
+        console.error("Ошибка при сортировке данных:", error);
+        return [];
+    }
+};
 
 export const getFireBaseApp = () => app;
